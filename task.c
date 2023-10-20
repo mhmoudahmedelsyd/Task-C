@@ -11,6 +11,13 @@ struct User
     char username[20];
     char email[50];
     char password[20];
+    union 
+    {
+         bool ActiveBool;
+         int ActiveInt;
+    }ActiveFlag;
+    
+
 };
 
 struct User users[NUM_OF_USER];
@@ -36,7 +43,6 @@ void RegisterMthod()
 
         } 
 
-    
     }
 
      if (!is_valid_email(users[UsersCounter].email)) {
@@ -50,10 +56,25 @@ void RegisterMthod()
 
     printf("Enter a password: ");
     scanf("%s", users[UsersCounter].password);
+    char flagInput[10];
+    printf("Enter the active flag (1/0 or true/false): ");
+    scanf("%s", flagInput);
+    if (strcmp(flagInput, "1") == 0 || strcasecmp(flagInput, "true") == 0) {
+        users[UsersCounter].ActiveFlag.ActiveBool = true;
+        users[UsersCounter].ActiveFlag.ActiveInt = 1;
+    } else if (strcmp(flagInput, "0") == 0 || strcasecmp(flagInput, "false") == 0) {
+        users[UsersCounter].ActiveFlag.ActiveBool = false;
+        users[UsersCounter].ActiveFlag.ActiveInt = 0;
+    } else {
+        printf("Invalid flag input. Registration failed.\n");
+        return;
+    }
+
 
     printf("Registration successful..\n");
     UsersCounter++;
 }
+
 
 void LoginMethod()
 {
@@ -70,8 +91,15 @@ void LoginMethod()
     {
         if (strcmp(email, users[i].email) == 0 && strcmp(password, users[i].password) == 0)
         {
+            if(users[i].ActiveFlag.ActiveBool==true||users[UsersCounter].ActiveFlag.ActiveInt==1 ){
             printf("Login successful..\n");
             return;
+            }else{
+                printf("Your Are Not Active:\n");
+                return ;
+            }
+
+           
         }
     }
 
@@ -106,6 +134,7 @@ int main()
             return 0;
         default:
             printf("Invalid choice. Please try again.\n");
+            return 0;
         }
     }
 
